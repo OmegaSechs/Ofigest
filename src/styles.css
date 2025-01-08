@@ -1,0 +1,94 @@
+/* Estilos gerais */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+}
+
+.container {
+    width: 80%;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Título e cabeçalho */
+h1 {
+    color: #333;
+    font-size: 24px;
+    text-align: center;
+}
+
+/* Formulário de busca */
+label {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+input[type="text"], select {
+    padding: 8px;
+    width: 300px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+input[type="text"]:focus, select:focus {
+    border-color: #c78111; /* Cor personalizada para foco */
+    outline: none;
+}
+
+/* Lista de produtos e serviços filtrados */
+#lista-produtos-servicos {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+#lista-produtos-servicos li {
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    margin: 5px 0;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#lista-produtos-servicos li:hover {
+    background-color: #e0e0e0;
+}
+
+/* Estilos do container para os botões */
+.buttons-container {
+    display: flex;
+    justify-content: flex-end; /* Alinha os botões à direita */
+    margin-top: 20px;
+    margin-right: 50px;
+}
+
+/* Estilos de botões e ações */
+button {
+    background-color: #c78111;
+    color: white;
+    border: none;
+    padding: 6px 12px; /* Ajustei o padding para tornar o botão menor */
+    font-size: 14px;    /* Reduzi o tamanho da fonte */
+    cursor: pointer;
+    border-radius: 4px;
+    margin-left: 10px; /* Espaço entre os botões */
+}
+
+button:hover {
+    background-color: #a6680e;
+}
+
+/* Estilo de mensagem de erro */
+.error {
+    color: red;
+    font-weight: bold;
+    margin-top: 10px;
+}

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Ordens de Serviço</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Cadastro de Ordens de Serviço</h1>
+    </header>
+    <main>
+        <section id="ordens">
+            <h2>Ordens de Serviço</h2>
+            <input type="text" id="filtroCliente" placeholder="Filtrar por cliente">
+            <button onclick="filtrarOrdens()">Filtrar</button>
+            <table id="tabelaOrdens">
+                <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Veículo</th>
+                        <th>Placa</th>
+                        <th>Data Entrada</th>
+                        <th>Hora Entrada</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
+        <section id="cadastrarNova">
+            <h2>Nova Ordem de Serviço</h2>
+            <button onclick="redirecionarParaCadastro()">Cadastrar</button>
+        </section>
+    </main>
+    <footer>
+        <p>© 2025 Ofigest</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

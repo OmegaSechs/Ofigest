@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro Detalhado de Ordem de Serviço</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Cadastro de OS/Orçamento</h1>
+    </header>
+    <main>
+        <form id="formOS" onsubmit="cadastrarOS(event)">
+
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" required>
+            
+            <label for="endereco">Endereço:</label>
+            <input type="text" id="endereco" required>
+            
+            <label for="cpf">CPF:</label>
+            <input type="text" id="cpf" required>
+            
+            <label for="telefone">Telefone:</label>
+            <input type="text" id="telefone" required>
+            
+            <label for="veiculo">Veículo:</label>
+            <input type="text" id="veiculo" required>
+            
+            <label for="placa">Placa:</label>
+            <input type="text" id="placa" required>
+            
+            <label for="dataEntrada">Data de Entrada:</label>
+            <input type="date" id="dataEntrada" required>
+            
+            <label for="dataSaida">Data de Saída:</label>
+            <input type="date" id="dataSaida">
+
+            <label for="horaSaida">Hora de Saída:</label>
+            <input type="time" id="horaSaida">
+
+            
+            <label for="tipo">Tipo:</label>
+            <select id="tipo" required>
+                <option value="orcamento">Orçamento</option>
+                <option value="ordem_servico">Ordem de Serviço</option>
+            </select>
+            
+            <label for="tipo-produto-servico">Tipo:</label>
+            <select id="tipo-produto-servico" name="tipo-produto-servico" onchange="filtrarProdutosServicos()">
+            <option value="">Todos</option>
+            <option value="servico">Serviço</option>
+            <option value="peca">Peça</option>
+            </select>
+            <div class="buttons-container">
+                <button type="">Voltar</button>
+                <button type="submit">Cadastrar</button>
+            </div>
+        </form>
+    </main>
+    <footer>
+        <p>© 2025 Ofigest</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
