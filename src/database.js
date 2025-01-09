@@ -3,7 +3,7 @@ import firebird from "node-firebird";
 const dbOptions = {
     host: 'localhost',
     port: 3050,
-    database: 'D:\\Projetos\\Mecanica_Daniel\\Novo_site\\db\\OFIGEST.FDB',    
+    database: 'D:\\Projetos\\Ofigest\\src\\db\\OFIGEST.FDB',    
     user: "SYSDBA",
     password: "masterkey",
     lowercase_keys: false,

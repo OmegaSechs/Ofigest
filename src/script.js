@@ -77,3 +77,47 @@ async function filtrarOrdens() {
 function detalharOrdem(id) {
     window.location.href = `detalhes-os.html?id=${id}`;
 }
+
+
+// Função para buscar os produtos e serviços na API
+function buscarProdutosServicos() {
+    const searchQuery = document.getElementById('search-bar').value;
+
+    fetch(`/produtos-servicos?search=${searchQuery}`)
+        .then(response => response.json())
+        .then(data => {
+            const tbody = document.getElementById('modal-table-body');
+            tbody.innerHTML = ''; // Limpar a tabela antes de preencher
+
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.code}</td>
+                    <td>${item.name}</td>
+                    <td>${item.type}</td>
+                    <td><button onclick="adicionarItem(${item.code}, '${item.name}', ${item.type})">Adicionar</button></td>
+                `;
+                tbody.appendChild(row);
+            });
+        })
+        .catch(error => console.error('Erro ao buscar produtos e serviços:', error));
+}
+
+// Função para adicionar item à lista
+function adicionarItem(codigo, nome, tipo) {
+    const itemTable = document.getElementById('itens-table').getElementsByTagName('tbody')[0];
+    const row = itemTable.insertRow();
+    row.innerHTML = `
+        <td>${codigo}</td>
+        <td>${nome}</td>
+        <td><input type="number" value="1" min="1"></td>
+        <td>--</td>
+        <td><button onclick="removerItem(this)">Remover</button></td>
+    `;
+}
+
+// Função para remover item da tabela
+function removerItem(button) {
+    const row = button.parentElement.parentElement;
+    row.remove();
+}

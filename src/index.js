@@ -1,4 +1,3 @@
-// index.js
 import express from "express";
 import cors from "cors";
 import { executeQuery, firebird, dbOptions, executeQueryTrx } from "./database.js";
@@ -9,7 +8,35 @@ const app = express();
 app.use(express.json());
 
 // Middleware CORS
-app.use(cors());
+app.use(cors({
+    origin: '*', // Permitir todas as origens
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
+    allowedHeaders: ['Content-Type', 'Authorization'] // Cabeçalhos permitidos
+}));
+
+// Rota para listar produtos
+app.get("/api/produtos", function (req, res) {
+    // Filtro opcional para a busca de produtos
+    const searchTerm = req.query.search || '';
+    const filtroNome = `%${searchTerm}%`; // Filtro para o nome
+    const filtroId = `%${searchTerm}%`;  // Filtro para o id
+
+    // Query para buscar produtos na tabela produtos_servicos
+    const ssql = `
+        SELECT ID, DESCRICAO AS nome, TIPO AS tipo, PRECO AS preco
+        FROM produtos_servicos
+        WHERE DESCRICAO LIKE ? OR CAST(ID AS VARCHAR(20)) LIKE ?
+    `;
+
+    executeQuery(ssql, [filtroNome, filtroId], function (err, results) {
+        if (err) {
+            console.error('Erro ao executar a query:', err);
+            return res.status(500).json({ message: 'Erro ao buscar produtos', error: err.message });
+        }
+
+        res.json(results);
+    });
+});
 
 // Rota para listar ordens de serviço
 app.get("/ordens-servico", function (req, res) {
@@ -29,32 +56,32 @@ app.get("/ordens-servico", function (req, res) {
 
     // Aplicar filtros dinamicamente
     if (req.query.cliente) {
-        ssql += "AND CLIENTE LIKE ? ";
-        filtro.push("%" + req.query.cliente + "%");
+        ssql += " AND CLIENTE LIKE ? ";
+        filtro.push(`%${req.query.cliente}%`);
     }
 
     if (req.query.veiculo) {
-        ssql += "AND VEICULO LIKE ? ";
-        filtro.push("%" + req.query.veiculo + "%");
+        ssql += " AND VEICULO LIKE ? ";
+        filtro.push(`%${req.query.veiculo}%`);
     }
 
     if (req.query.placa) {
-        ssql += "AND PLACA LIKE ? ";
-        filtro.push("%" + req.query.placa + "%");
+        ssql += " AND PLACA LIKE ? ";
+        filtro.push(`%${req.query.placa}%`);
     }
 
     if (req.query.tipo) {
-        ssql += "AND TIPO = ? ";
+        ssql += " AND TIPO = ? ";
         filtro.push(req.query.tipo);
     }
 
     if (req.query.dataEntrada) {
-        ssql += "AND DATA_ENTRADA = ? ";
+        ssql += " AND DATA_ENTRADA = ? ";
         filtro.push(req.query.dataEntrada);
     }
 
     if (req.query.dataSaida) {
-        ssql += "AND DATA_SAIDA = ? ";
+        ssql += " AND DATA_SAIDA = ? ";
         filtro.push(req.query.dataSaida);
     }
 
@@ -66,20 +93,6 @@ app.get("/ordens-servico", function (req, res) {
             res.status(200).json(result);
         }
     });
-});
-
-app.get('/ordens-servico/:id', async (req, res) => {
-    const { id } = req.params;
-    try {
-        const ordem = await database.getOrdemServicoById(id); // Método que busca no banco
-        if (!ordem) {
-            return res.status(404).json({ error: 'Ordem não encontrada' });
-        }
-        res.json(ordem);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Erro ao buscar a ordem' });
-    }
 });
 
 // Rota para cadastrar uma nova ordem de serviço
@@ -133,14 +146,16 @@ app.post("/ordens-servico", function (req, res) {
                     hora_saida,
                     tipo
                 ]);
-                const id_ordem_servico = result.ID;
+                const id_ordem_servico = result[0].ID; // Pega o ID gerado pela inserção da ordem
 
                 // Inserir serviços e produtos na tabela os_itens
                 for (const item of [...servicos, ...produtos]) {
                     let tipoItem = item.tipo === 'servico' ? 'S' : 'P';  // Definir tipo 'S' para serviço, 'P' para produto
 
                     // Buscar preço e descrição na tabela produtos_servicos
-                    ssql = `SELECT descricao, preco FROM produtos_servicos WHERE id = ? AND tipo = ?`;
+                    ssql = `
+                        SELECT descricao, preco FROM produtos_servicos WHERE id = ? AND tipo = ?
+                    `;
                     let itemDetails = await executeQueryTrx(transaction, ssql, [item.id, tipoItem]);
 
                     if (itemDetails.length === 0) {

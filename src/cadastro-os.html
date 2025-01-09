@@ -5,6 +5,89 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro Detalhado de Ordem de Serviço</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Estilos gerais */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header, footer {
+            text-align: center;
+            padding: 10px;
+            color: rgb(255, 255, 255);
+        }
+        main {
+            padding: 20px;
+            color: black;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        input, select, button {
+            padding: 10px;
+            font-size: 14px;
+        }
+        .buttons-container {
+            display: flex;
+            justify-content: space-between;
+        }
+        /* Estilos do modal */
+        .modal {
+            color: black;
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            width: 80%;
+            max-width: 600px;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-body {
+            margin-top: 15px;
+        }
+        .modal-body table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .modal-body th, .modal-body td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .modal-footer {
+            margin-top: 15px;
+            text-align: right;
+        }
+        .item-list {
+            margin-top: 20px;
+        }
+        .item-list table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .item-list th, .item-list td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -12,7 +95,6 @@
     </header>
     <main>
         <form id="formOS" onsubmit="cadastrarOS(event)">
-
             <label for="nome">Nome:</label>
             <input type="text" id="nome" required>
             
@@ -40,21 +122,34 @@
             <label for="horaSaida">Hora de Saída:</label>
             <input type="time" id="horaSaida">
 
-            
             <label for="tipo">Tipo:</label>
             <select id="tipo" required>
                 <option value="orcamento">Orçamento</option>
                 <option value="ordem_servico">Ordem de Serviço</option>
             </select>
             
-            <label for="tipo-produto-servico">Tipo:</label>
-            <select id="tipo-produto-servico" name="tipo-produto-servico" onchange="filtrarProdutosServicos()">
-            <option value="">Todos</option>
-            <option value="servico">Serviço</option>
-            <option value="peca">Peça</option>
-            </select>
+            <button type="button" onclick="abrirModal()">Adicionar Produto/Serviço</button>
+            
+            <div class="item-list">
+                <h3>Itens na OS:</h3>
+                <table id="itens-table">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Nome</th>
+                            <th>Quantidade</th>
+                            <th>Valor</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Itens adicionados -->
+                    </tbody>
+                </table>
+            </div>
+
             <div class="buttons-container">
-                <button type="">Voltar</button>
+                <button type="button" onclick="voltar()">Voltar</button>
                 <button type="submit">Cadastrar</button>
             </div>
         </form>
@@ -62,6 +157,139 @@
     <footer>
         <p>© 2025 Ofigest</p>
     </footer>
-    <script src="script.js"></script>
+
+    <!-- Modal -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Buscar Produtos/Serviços</h2>
+                <button onclick="fecharModal()">X</button>
+            </div>
+            <div class="modal-body">
+                <label for="search-bar">Buscar:</label>
+                <input type="text" id="search-bar" oninput="buscarProdutosServicos()" placeholder="Digite para buscar...">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Nome</th>
+                            <th>Tipo</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="modal-table-body">
+                        <!-- Itens carregados dinamicamente -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button onclick="fecharModal()">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function buscarProdutosServicos() {
+            const searchTerm = document.getElementById('search-bar').value.toLowerCase();
+            const modalTableBody = document.getElementById('modal-table-body');
+            modalTableBody.innerHTML = '';
+
+            try {
+                const response = await fetch(`http://localhost:3000/api/produtos?search=${searchTerm}`);
+                const produtos = await response.json();
+
+                const filteredItems = produtos.filter(item => 
+                    item.NOME.toLowerCase().includes(searchTerm) || 
+                    item.ID.toString().includes(searchTerm)
+                );
+
+                filteredItems.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${item.ID}</td>
+                        <td>${item.NOME}</td>
+                        <td>${item.TIPO}</td>
+                        <td><button onclick="adicionarItem(${item.ID}, '${item.NOME}', ${item.PRECO})">Adicionar</button></td>
+                    `;
+                    modalTableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Erro ao buscar produtos:', error);
+            }
+        }
+
+        function adicionarItem(code, name, valor) {
+            const tableBody = document.getElementById('itens-table').querySelector('tbody');
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${code}</td>
+                <td>${name}</td>
+                <td><input type="number" value="1" min="1"></td>
+                <td>${valor}</td>
+                <td><button onclick="removerItem(this)">Remover</button></td>
+            `;
+            tableBody.appendChild(row);
+            fecharModal();
+        }
+
+        function removerItem(button) {
+            button.parentElement.parentElement.remove();
+        }
+
+        function fecharModal() {
+            const modal = document.getElementById('modal');
+            modal.style.display = 'none';
+        }
+
+        async function cadastrarOS(event) {
+            event.preventDefault();
+
+            const osData = {
+                cliente: document.getElementById('nome').value,
+                veiculo: document.getElementById('veiculo').value,
+                placa: document.getElementById('placa').value,
+                data_entrada: document.getElementById('dataEntrada').value,
+                hora_entrada: new Date().toLocaleTimeString(),
+                data_saida: document.getElementById('dataSaida').value,
+                hora_saida: document.getElementById('horaSaida').value,
+                tipo: document.getElementById('tipo').value,
+                servicos: [],
+                produtos: []
+            };
+
+            const items = document.querySelectorAll('#itens-table tbody tr');
+            items.forEach(item => {
+                const tipo = item.cells[0].textContent.startsWith('P') ? 'produto' : 'servico';
+                const id = item.cells[0].textContent;
+                const quantidade = item.querySelector('input').value;
+                osData[tipo].push({ id, quantidade });
+            });
+
+            try {
+                const response = await fetch('/api/cadastrarOS', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(osData)
+                });
+
+                if (response.ok) {
+                    alert('OS cadastrada com sucesso!');
+                } else {
+                    alert('Erro ao cadastrar OS');
+                }
+            } catch (error) {
+                console.error('Erro ao cadastrar OS:', error);
+            }
+        }
+
+        function abrirModal() {
+            const modal = document.getElementById('modal');
+            modal.style.display = 'flex';
+        }
+
+        function voltar() {
+            window.history.back();
+        }
+    </script>
 </body>
 </html>

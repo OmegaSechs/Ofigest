@@ -1,94 +1,114 @@
-/* Estilos gerais */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f9;
+header, footer {
+    background-color: #333;
+    color: #fff;
 }
-
 .container {
     width: 80%;
-    margin: 20px auto;
-    background-color: #fff;
+    margin: 0 auto;
     padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
 }
 
-/* Título e cabeçalho */
-h1 {
-    color: #333;
-    font-size: 24px;
+h1, h2 {
     text-align: center;
 }
 
-/* Formulário de busca */
-label {
-    font-weight: bold;
-    margin-right: 10px;
+/* Estilo para o formulário */
+form {
+    display: grid;
+    grid-gap: 10px;
+    margin-bottom: 20px;
 }
 
-input[type="text"], select {
+/* Tabelas */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
     padding: 8px;
-    width: 300px;
-    margin: 10px 0;
     border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 16px;
+    text-align: center;
 }
 
-input[type="text"]:focus, select:focus {
-    border-color: #c78111; /* Cor personalizada para foco */
-    outline: none;
-}
-
-/* Lista de produtos e serviços filtrados */
-#lista-produtos-servicos {
-    list-style: none;
-    padding: 0;
-    margin-top: 20px;
-}
-
-#lista-produtos-servicos li {
-    padding: 10px;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    margin: 5px 0;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-#lista-produtos-servicos li:hover {
-    background-color: #e0e0e0;
-}
-
-/* Estilos do container para os botões */
-.buttons-container {
-    display: flex;
-    justify-content: flex-end; /* Alinha os botões à direita */
-    margin-top: 20px;
-    margin-right: 50px;
-}
-
-/* Estilos de botões e ações */
+/* Botões */
 button {
-    background-color: #c78111;
+    padding: 10px 20px;
+    background-color: #4CAF50;
     color: white;
     border: none;
-    padding: 6px 12px; /* Ajustei o padding para tornar o botão menor */
-    font-size: 14px;    /* Reduzi o tamanho da fonte */
     cursor: pointer;
-    border-radius: 4px;
-    margin-left: 10px; /* Espaço entre os botões */
 }
 
 button:hover {
-    background-color: #a6680e;
+    background-color: #45a049;
 }
 
-/* Estilo de mensagem de erro */
-.error {
-    color: red;
+/* Estilo do Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+    padding-top: 60px;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+.close {
+    color: #aaa;
+    font-size: 28px;
     font-weight: bold;
-    margin-top: 10px;
+    position: absolute;
+    top: 0;
+    right: 25px;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Estilo da tabela no modal */
+#modal-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+#modal-table th, #modal-table td {
+    padding: 8px;
+    border: 1px solid #ccc;
+    text-align: center;
+}
+
+#search-bar {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+}
+
+#modal-table tbody tr {
+    cursor: pointer;
+}
+
+#modal-table tbody tr:hover {
+    background-color: #f1f1f1;
 }
